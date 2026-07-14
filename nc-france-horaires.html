@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nouméa ⇄ Paris — Bon moment pour appeler ?</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+:root{
+  --bg:#0B1220;
+  --bg-glow: radial-gradient(circle at 15% -10%, rgba(45,212,191,0.14), transparent 45%),
+             radial-gradient(circle at 90% 0%, rgba(91,124,250,0.14), transparent 40%);
+  --surface:#121A2E;
+  --surface-2:#1A2440;
+  --border: rgba(237,239,247,0.10);
+  --lagoon:#2DD4BF;
+  --lagoon-dim: rgba(45,212,191,0.16);
+  --marianne:#5B7CFA;
+  --marianne-dim: rgba(91,124,250,0.16);
+  --red:#F0555B;
+  --red-dim: rgba(240,85,91,0.16);
+  --green:#34D399;
+  --green-dim: rgba(52,211,153,0.16);
+  --text:#EDEFF7;
+  --muted:#8A93B2;
+  --muted-2:#5B6B8C;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg) var(--bg-glow);
+  color:var(--text);
+  font-family:'Inter',system-ui,sans-serif;
+  min-height:100vh;
+  padding:40px 20px 60px;
+  -webkit-font-smoothing:antialiased;
+}
+
+.shell{max-width:760px;margin:0 auto;}
+
+/* ---------- Header ---------- */
+.eyebrow{
+  display:flex; align-items:center; gap:10px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12.5px; letter-spacing:0.18em; text-transform:uppercase;
+  color:var(--lagoon); margin-bottom:14px;
+}
+.eyebrow::before{
+  content:''; width:7px; height:7px; border-radius:50%;
+  background:var(--lagoon); box-shadow:0 0 0 4px var(--lagoon-dim);
+}
+h1{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(28px,5vw,38px);
+  line-height:1.15; letter-spacing:-0.01em;
+  margin:0 0 10px;
+}
+.subtitle{color:var(--muted); font-size:15px; line-height:1.6; max-width:56ch; margin:0 0 32px;}
+
+/* ---------- Card base ---------- */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:26px 26px 24px;
+  margin-bottom:20px;
+  position:relative;
+}
+.card h2{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:16px; font-weight:600; margin:0 0 18px;
+  display:flex; align-items:center; gap:8px;
+}
+.card h2 .idx{
+  font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted);
+  background:var(--surface-2); border:1px solid var(--border);
+  padding:2px 7px; border-radius:6px;
+}
+
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+
+/* ---------- Picker ---------- */
+.picker-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:14px;}
+.field{display:flex; flex-direction:column; gap:6px; flex:1; min-width:140px;}
+.field label{font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; font-family:'IBM Plex Mono',monospace;}
+.field input{
+  background:var(--surface-2); border:1px solid var(--border); border-radius:10px;
+  color:var(--text); font-family:'IBM Plex Mono',monospace; font-size:15px;
+  padding:10px 12px; outline:none; color-scheme:dark;
+}
+.field input:focus{border-color:var(--lagoon);}
+
+.slider-block{margin-bottom:22px;}
+.slider-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:12px;}
+.slider-head .big-time{
+  font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:26px; color:var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.slider-head .big-label{font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; font-family:'IBM Plex Mono',monospace;}
+.slider-track-wrap{position:relative; padding:6px 0 4px;}
+input[type="range"].time-slider{
+  -webkit-appearance:none; appearance:none;
+  width:100%; height:8px; border-radius:999px;
+  background: linear-gradient(90deg, var(--lagoon) 0%, var(--lagoon) var(--fill,50%), var(--surface-2) var(--fill,50%), var(--surface-2) 100%);
+  outline:none; cursor:pointer; margin:0;
+}
+input[type="range"].time-slider::-webkit-slider-thumb{
+  -webkit-appearance:none; appearance:none;
+  width:22px; height:22px; border-radius:50%;
+  background:var(--lagoon); border:3px solid var(--bg);
+  box-shadow:0 0 0 2px var(--lagoon), 0 2px 6px rgba(0,0,0,0.4);
+  cursor:grab; margin-top:0;
+}
+input[type="range"].time-slider::-webkit-slider-thumb:active{cursor:grabbing;}
+input[type="range"].time-slider::-moz-range-thumb{
+  width:22px; height:22px; border-radius:50%;
+  background:var(--lagoon); border:3px solid var(--bg);
+  box-shadow:0 0 0 2px var(--lagoon), 0 2px 6px rgba(0,0,0,0.4);
+  cursor:grab;
+}
+input[type="range"].time-slider::-moz-range-track{
+  height:8px; border-radius:999px; background:var(--surface-2);
+}
+.slider-ticks{display:flex; justify-content:space-between; margin-top:6px; font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted-2);}
+
+.presets{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;}
+.preset-btn{
+  background:var(--surface-2); border:1px solid var(--border); color:var(--muted);
+  font-family:'IBM Plex Mono',monospace; font-size:12.5px; padding:7px 12px;
+  border-radius:999px; cursor:pointer; transition:all .15s ease;
+}
+.preset-btn:hover{border-color:var(--lagoon); color:var(--text);}
+
+.result{
+  display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+  background:var(--surface-2); border:1px solid var(--border); border-radius:14px;
+  padding:16px 18px;
+}
+.result-side{display:flex; flex-direction:column; gap:5px;}
+.result-side .r-label{
+  display:flex; align-items:center; gap:6px;
+  font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.1em;
+  text-transform:uppercase; color:var(--muted);
+}
+.result-side .r-label .dot{width:6px;height:6px;}
+.result .arrow{color:var(--muted); font-size:18px;}
+.result .r-time{font-family:'IBM Plex Mono',monospace; font-size:22px; font-weight:600; font-variant-numeric: tabular-nums;}
+.result .r-day{font-size:13px; color:var(--muted); text-transform:capitalize;}
+.result .r-badge{
+  margin-left:auto; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px;
+  padding:6px 12px; border-radius:999px; display:flex; align-items:center; gap:6px;
+}
+.result .r-badge.open{background:var(--green-dim); color:var(--green);}
+.result .r-badge.closed{background:var(--red-dim); color:var(--red);}
+
+.section-divider{height:1px; background:var(--border); margin:26px 0 20px;}
+.subheader{
+  font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:600;
+  margin:0 0 16px; color:var(--text);
+}
+
+/* ---------- Admin chips ---------- */
+.chips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px;}
+.chip{
+  background:var(--surface-2); border:1px solid var(--border); color:var(--muted);
+  font-size:13px; padding:8px 13px; border-radius:10px; cursor:pointer;
+  transition:all .15s ease;
+}
+.chip.active{background:var(--marianne-dim); border-color:rgba(91,124,250,0.4); color:var(--text);}
+.chip:hover{color:var(--text);}
+
+/* ---------- Timeline ---------- */
+.timeline-wrap{position:relative; padding-top:22px; padding-bottom:8px;}
+.timeline{
+  position:relative; height:34px; border-radius:8px; overflow:hidden;
+  display:flex; background:rgba(0,0,0,0.25); border:1px solid var(--border);
+}
+.seg{height:100%; background:transparent;}
+.seg.open{background:linear-gradient(180deg, rgba(52,211,153,0.55), rgba(52,211,153,0.28));}
+.hour-ticks{display:flex; justify-content:space-between; margin-top:7px; font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted-2);}
+.marker{
+  position:absolute; top:0; width:2px; height:34px; background:var(--text);
+  transform:translateX(-1px);
+}
+.marker .tag{
+  position:absolute; top:-24px; left:50%; transform:translateX(-50%);
+  font-family:'IBM Plex Mono',monospace; font-size:10px; white-space:nowrap;
+  background:var(--surface-2); border:1px solid var(--border); padding:2px 6px; border-radius:5px;
+  color:var(--muted);
+}
+.marker.selected{background:var(--lagoon);}
+.marker.selected .tag{color:var(--lagoon); border-color:rgba(45,212,191,0.4);}
+.marker.now{background:var(--marianne); opacity:0.85;}
+.marker.now .tag{color:var(--marianne); border-color:rgba(91,124,250,0.4); top:38px;}
+
+.legend{display:flex; gap:18px; margin-top:18px; flex-wrap:wrap;}
+.legend-item{display:flex; align-items:center; gap:7px; font-size:12px; color:var(--muted);}
+.legend-swatch{width:11px;height:11px;border-radius:3px;}
+
+/* ---------- Footer ---------- */
+.foot{margin-top:8px; padding:0 4px;}
+.foot .offset-note{
+  font-size:13px; color:var(--muted); line-height:1.6; margin-bottom:10px;
+  display:flex; gap:8px; align-items:flex-start;
+}
+.foot .offset-note strong{color:var(--text);}
+.foot .disclaimer{font-size:11.5px; color:#5B6B8C; line-height:1.6;}
+.foot a{color:var(--lagoon); text-decoration:none;}
+.foot a:hover{text-decoration:underline;}
+
+@media (max-width:520px){
+  .result .r-badge{margin-left:0;}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  
+  <!-- PICKER + TIMELINE (cadre unique) -->
+  <div class="card">
+	<div class="eyebrow">Tester une heure Nouméa ⇄ Paris</div>
+    <div class="picker-row">
+      <div class="field">
+        <label for="dateInput">Date (Nouméa)</label>
+        <input type="date" id="dateInput">
+      </div>
+      <div class="field">
+        <label for="timeInput">Heure (Nouméa)</label>
+        <input type="time" id="timeInput">
+      </div>
+    </div>
+    <div class="slider-block">
+      <div class="slider-head">
+        <span class="big-label">Heure à Nouméa</span>
+        <span class="big-time" id="sliderTimeLabel">--:--</span>
+      </div>
+      <div class="slider-track-wrap">
+        <input type="range" class="time-slider" id="timeSlider" min="0" max="1439" step="5">
+      </div>
+      <div class="slider-ticks">
+        <span>0h</span><span>4h</span><span>8h</span><span>12h</span><span>16h</span><span>20h</span><span>24h</span>
+      </div>
+    </div>
+    <div class="presets" id="presets"></div>
+
+    <div class="result">
+      <div class="result-side">
+        <span class="r-label"><span class="dot" style="background:var(--lagoon);"></span>Nouméa</span>
+        <span class="r-time" id="resTimeNC">--:--</span>
+      </div>
+      <div class="arrow">→</div>
+      <div class="result-side">
+        <span class="r-label"><span class="dot" style="background:var(--marianne);"></span>Paris</span>
+        <span class="r-time" id="resTime">--:--</span>
+      </div>
+      <div class="r-day" id="resDay">—</div>
+      <div class="r-badge" id="resBadge">—</div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <h3 class="subheader">Plage horaire, vue depuis Nouméa</h3>
+    <div class="chips" id="chips"></div>
+    <div class="timeline-wrap">
+      <div class="timeline" id="timelineBar"></div>
+      <div id="markers"></div>
+      <div class="hour-ticks">
+        <span>0h</span><span>4h</span><span>8h</span><span>12h</span><span>16h</span><span>20h</span><span>24h</span>
+      </div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><span class="legend-swatch" style="background:linear-gradient(180deg, rgba(52,211,153,0.55), rgba(52,211,153,0.28));"></span>Guichet ouvert (heure de Nouméa)</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--lagoon);"></span>Heure choisie</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--marianne);"></span>Maintenant</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="offset-note" id="offsetNote">Calcul du décalage horaire…</div>
+    <div class="disclaimer">
+      Horaires d'administration indicatifs (mairies, préfectures, CAF, impôts, service-public.fr) — variables selon l'organisme et les jours fériés. À vérifier sur <a href="https://www.service-public.fr" target="_blank" rel="noopener">service-public.fr</a> avant un appel important. La Nouvelle-Calédonie n'applique pas de changement d'heure ; le décalage avec Paris varie donc entre 9h (été) et 10h (hiver).
+    </div>
+  </div>
+
+</div>
+
+<script>
+const NC_TZ = 'Pacific/Noumea';
+const FR_TZ = 'Europe/Paris';
+
+/* ---- generic, DST-safe offset helper using the browser's own tz database ---- */
+function offsetMinutes(tz, instant){
+  const dtf = new Intl.DateTimeFormat('en-US', {
+    timeZone: tz, hourCycle:'h23',
+    year:'numeric', month:'2-digit', day:'2-digit',
+    hour:'2-digit', minute:'2-digit', second:'2-digit'
+  });
+  const p = dtf.formatToParts(instant).reduce((a,x)=>{ if(x.type!=='literal') a[x.type]=x.value; return a; },{});
+  const asUTC = Date.UTC(p.year, p.month-1, p.day, p.hour, p.minute, p.second);
+  return Math.round((asUTC - instant.getTime())/60000);
+}
+
+/* build a precise instant from a wall-clock date+time expressed in `tz` */
+function wallToInstant(y,m,d,hh,mm,tz){
+  let guess = new Date(Date.UTC(y,m-1,d,hh,mm,0));
+  const off = offsetMinutes(tz, guess); // minutes to add to local to get UTC... actually asUTC-instant, so local = UTC+off => UTC = local-off
+  return new Date(Date.UTC(y,m-1,d,hh,mm,0) - off*60000);
+}
+
+function localParts(instant, tz){
+  const d = new Date(instant.toLocaleString('en-US', {timeZone: tz}));
+  return { day: d.getDay(), hour: d.getHours(), minute: d.getMinutes() };
+}
+
+function fmtTime(instant, tz){
+  return instant.toLocaleTimeString('fr-FR', {timeZone: tz, hour:'2-digit', minute:'2-digit', second:'2-digit'});
+}
+function fmtTimeShort(instant, tz){
+  return instant.toLocaleTimeString('fr-FR', {timeZone: tz, hour:'2-digit', minute:'2-digit'});
+}
+function fmtDate(instant, tz){
+  return instant.toLocaleDateString('fr-FR', {timeZone: tz, weekday:'long', day:'numeric', month:'long'});
+}
+function fmtDay(instant, tz){
+  return instant.toLocaleDateString('fr-FR', {timeZone: tz, weekday:'long'});
+}
+
+/* ---- admin profiles (Paris local time, minutes from midnight) ---- */
+const PROFILES = {
+  mairie: {
+    label: 'Mairie / Préfecture / CAF',
+    hours: { 1:[[540,720],[810,1020]], 2:[[540,720],[810,1020]], 3:[[540,720],[810,1020]], 4:[[540,720],[810,1020]], 5:[[540,720],[810,1020]] }
+  },
+  impots: {
+    label: 'Centre des finances publiques',
+    hours: { 1:[[510,1140]], 2:[[510,1140]], 3:[[510,1140]], 4:[[510,1140]], 5:[[510,1140]] }
+  },
+  public3939: {
+    label: 'Allô Service Public (3939)',
+    hours: { 1:[[510,1170]], 2:[[510,1170]], 3:[[510,1170]], 4:[[510,1170]], 5:[[510,1170]], 6:[[540,1020]] }
+  }
+};
+let currentProfile = 'mairie';
+
+function isOpen(instant, profile){
+  const {day, hour, minute} = localParts(instant, FR_TZ);
+  const ranges = profile.hours[day];
+  if(!ranges) return false;
+  const mins = hour*60+minute;
+  return ranges.some(([s,e]) => mins>=s && mins<e);
+}
+
+/* ---------- Offset note + "maintenant" marker (mise à jour périodique légère) ---------- */
+function tick(){
+  const now = new Date();
+  const offNC = offsetMinutes(NC_TZ, now), offFR = offsetMinutes(FR_TZ, now);
+  const diffH = Math.round((offNC-offFR)/60*10)/10;
+  const dstFr = offFR === -120 ? "heure d'été" : "heure d'hiver";
+  document.getElementById('offsetNote').innerHTML =
+    `<span>🕐</span><span>Paris a actuellement ${diffH} heures de moins que Nouméa (${dstFr} en France, aucun changement d'heure en Nouvelle-Calédonie).</span>`;
+  updateMarkers();
+}
+
+/* ---------- Slider <-> time input sync ---------- */
+function syncSliderFromTime(){
+  const timeVal = document.getElementById('timeInput').value;
+  if(!timeVal) return;
+  const [hh,mm] = timeVal.split(':').map(Number);
+  const mins = hh*60+mm;
+  const slider = document.getElementById('timeSlider');
+  slider.value = mins;
+  slider.style.setProperty('--fill', (mins/1439*100)+'%');
+  document.getElementById('sliderTimeLabel').textContent = timeVal;
+}
+
+function onSliderInput(){
+  const slider = document.getElementById('timeSlider');
+  const mins = parseInt(slider.value, 10);
+  const hh = Math.floor(mins/60), mm = mins%60;
+  const timeVal = String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');
+  document.getElementById('timeInput').value = timeVal;
+  slider.style.setProperty('--fill', (mins/1439*100)+'%');
+  document.getElementById('sliderTimeLabel').textContent = timeVal;
+  refreshPicker();
+}
+
+/* ---------- Picker ---------- */
+function refreshPicker(){
+  const dateVal = document.getElementById('dateInput').value;
+  const timeVal = document.getElementById('timeInput').value;
+  if(!dateVal || !timeVal) return;
+  syncSliderFromTime();
+  const [y,m,d] = dateVal.split('-').map(Number);
+  const [hh,mm] = timeVal.split(':').map(Number);
+  const instant = wallToInstant(y,m,d,hh,mm,NC_TZ);
+
+  document.getElementById('resTimeNC').textContent = timeVal;
+  document.getElementById('resTime').textContent = fmtTimeShort(instant, FR_TZ);
+  document.getElementById('resDay').textContent = fmtDay(instant, FR_TZ);
+
+  const open = isOpen(instant, PROFILES[currentProfile]);
+  const badge = document.getElementById('resBadge');
+  badge.className = 'r-badge ' + (open ? 'open':'closed');
+  badge.textContent = open ? '● Ouvert' : '● Fermé';
+
+  renderTimeline(dateVal);
+  updateMarkers();
+}
+
+function setPreset(hh, mm){
+  document.getElementById('timeInput').value = String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');
+  refreshPicker();
+}
+
+function initPresets(){
+  const wrap = document.getElementById('presets');
+  const presets = [['Maintenant', null], ['8h30',[8,30]], ['9h',[9,0]], ['12h',[12,0]], ['14h',[14,0]], ['17h',[17,0]], ['20h',[20,0]]];
+  presets.forEach(([label, t]) => {
+    const btn = document.createElement('button');
+    btn.className='preset-btn'; btn.textContent=label;
+    btn.onclick = () => {
+      if(t===null){
+        const now = new Date();
+        const p = localParts(now, NC_TZ);
+        document.getElementById('dateInput').value = now.toLocaleDateString('en-CA', {timeZone: NC_TZ});
+        setPreset(p.hour, p.minute);
+      } else {
+        setPreset(t[0], t[1]);
+      }
+    };
+    wrap.appendChild(btn);
+  });
+}
+
+/* ---------- Chips ---------- */
+function initChips(){
+  const wrap = document.getElementById('chips');
+  Object.keys(PROFILES).forEach(key => {
+    const chip = document.createElement('button');
+    chip.className = 'chip' + (key===currentProfile?' active':'');
+    chip.textContent = PROFILES[key].label;
+    chip.dataset.key = key;
+    chip.onclick = () => {
+      currentProfile = key;
+      document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      refreshPicker();
+    };
+    wrap.appendChild(chip);
+  });
+}
+
+/* ---------- Timeline ---------- */
+function renderTimeline(dateVal){
+  const bar = document.getElementById('timelineBar');
+  bar.innerHTML = '';
+  const [y,m,d] = dateVal.split('-').map(Number);
+  for(let i=0;i<48;i++){
+    const hh = Math.floor(i/2), mm = (i%2)*30;
+    const instant = wallToInstant(y,m,d,hh,mm,NC_TZ);
+    const open = isOpen(instant, PROFILES[currentProfile]);
+    const seg = document.createElement('div');
+    seg.className = 'seg' + (open ? ' open' : '');
+    seg.style.width = (100/48)+'%';
+    bar.appendChild(seg);
+  }
+}
+
+function updateMarkers(){
+  const wrap = document.getElementById('markers');
+  wrap.innerHTML = '';
+  wrap.style.position='relative'; wrap.style.height='0';
+
+  const dateVal = document.getElementById('dateInput').value;
+  const timeVal = document.getElementById('timeInput').value;
+  if(timeVal){
+    const [hh,mm] = timeVal.split(':').map(Number);
+    const pct = ((hh*60+mm)/1440)*100;
+    const m1 = document.createElement('div');
+    m1.className='marker selected';
+    m1.style.left = pct+'%';
+    m1.style.top = '-56px';
+    m1.innerHTML = `<span class="tag">${timeVal}</span>`;
+    wrap.appendChild(m1);
+  }
+
+  const now = new Date();
+  const nowNC = localParts(now, NC_TZ);
+  const today = now.toLocaleDateString('en-CA', {timeZone: NC_TZ});
+  if(dateVal === today){
+    const pct2 = ((nowNC.hour*60+nowNC.minute)/1440)*100;
+    const m2 = document.createElement('div');
+    m2.className='marker now';
+    m2.style.left = pct2+'%';
+    m2.style.top = '-56px';
+    m2.innerHTML = `<span class="tag">maint.</span>`;
+    wrap.appendChild(m2);
+  }
+}
+
+/* ---------- Init ---------- */
+function init(){
+  const now = new Date();
+  const nowNC = localParts(now, NC_TZ);
+  document.getElementById('dateInput').value = now.toLocaleDateString('en-CA', {timeZone: NC_TZ});
+  document.getElementById('timeInput').value = String(nowNC.hour).padStart(2,'0')+':'+String(nowNC.minute).padStart(2,'0');
+
+  initPresets();
+  initChips();
+  document.getElementById('dateInput').addEventListener('change', refreshPicker);
+  document.getElementById('timeInput').addEventListener('change', refreshPicker);
+  document.getElementById('timeSlider').addEventListener('input', onSliderInput);
+
+  refreshPicker();
+  tick();
+  setInterval(tick, 30000);
+}
+init();
+</script>
+</body>
+</html>
